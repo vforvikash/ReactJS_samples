@@ -1,0 +1,14 @@
+When model changes
+	1. Update the existing dom that is already created
+			Adv : Making efficient usage of the browser resources (browser)
+			DAdv : Write a lot code  (developer)
+	2. Replace the current view html with the new one
+			Adv : Write less code (developer)
+			DAdv : Inefficient usage of browser resources (browser)
+
+
+Adv : Making efficient usage of the browser resources (browser)
+Adv : Write less code (developer)
+
+
+Model Change -> trigger view.render() -> React -> Identifies the dom nodes that changes and updates only those dom nodes
