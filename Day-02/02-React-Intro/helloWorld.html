@@ -10,19 +10,40 @@
 
 	</script>
 	<script type="text/babel">
+		function Greeter(){
+			this.onMessageChange = null;
+			this.greet = function(name){
+				this.message = "Hi " + name + ", Have a nice day!";
+				if (typeof this.onMessageChange === 'function')
+					this.onMessageChange();
+			}
+		}
+
 		//JSX
+		var greeter = new Greeter();
 		var HelloWorld = React.createClass({
+			greet : function(){
+				var name = this.refs.txtName.value;
+				this.props.greeter.greet(name);
+		 	},
 			 render : function(){
-				return (
-					<h1>Hello React - {this.props.time}</h1>
-				);
+			 	
+			 	return (
+			 		<div>
+			 		<input type="text" ref="txtName" className="safdas"/>
+			 		<input type="button" value="Greet" onClick={this.greet} />
+			 		<h1>{this.props.greeter.message}</h1>
+			 		</div>
+			 	)
+				
 			}
 		});
 	
-		document.getElementById("btnRender").addEventListener("click", function(){
-			var currentTime = Date();
-			ReactDOM.render(<HelloWorld time={currentTime}></HelloWorld>, document.getElementById("content"));
-		});
+		function reRender(){
+			ReactDOM.render(<div><HelloWorld greeter={greeter}></HelloWorld></div>, document.getElementById("content"));
+		}
+		greeter.onMessageChange = reRender;
+		reRender();
 		
 		
 		
