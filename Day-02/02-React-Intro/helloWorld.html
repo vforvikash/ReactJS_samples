@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Hello World</title>
+	<script src="react.js"></script>
+	<script src="react-dom.js"></script>
+	<script src="browser.min.js"></script>
+	<script>
+
+	</script>
+	<script type="text/babel">
+		//JSX
+		var HelloWorld = React.createClass({
+			 render : function(){
+				return (
+					<h1>Hello React - {this.props.time}</h1>
+				);
+			}
+		});
+	
+		document.getElementById("btnRender").addEventListener("click", function(){
+			var currentTime = Date();
+			ReactDOM.render(<HelloWorld time={currentTime}></HelloWorld>, document.getElementById("content"));
+		});
+		
+		
+		
+
+
+	</script>
+</head>
+<body>
+	<input type="button" value="Render" id="btnRender">
+	<div id="content"></div>
+</body>
+</html>
