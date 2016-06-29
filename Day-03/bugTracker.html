@@ -42,7 +42,7 @@
 	<script type="text/babel">
 		var bugService = (function(){
 			var _data = [
-				{id : 1, name : 'Object reference not found', isClosed : false},
+				{id : 1, name : 'Object reference not found', isClosed : true},
 				{id : 2, name : 'User actions not recognized', isClosed : true},
 				{id : 3, name : 'Server communication failure', isClosed : false}
 			];
@@ -66,11 +66,18 @@
 		var BugList = React.createClass({
 			render : function(){
 				var totalBugsCount = this.props.bugs.length;
+				var closedBugsCount = this.props.bugs.reduce((result, bug) => bug.isClosed ? ++result : result, 0);
+				var bugItems = this.props.bugs.map((bug) => {
+					if (bug.isClosed)
+						return <li key={bug.id} className="closed">{bug.name}</li>;
+					return <li key={bug.id}>{bug.name}</li>;
+				});
+
 				return (
 		
 					<div className="content">
 					<div className="stats">
-						<span className="closed">3</span>
+						<span className="closed">{closedBugsCount}</span>
 						<span>/</span>
 						<span>{totalBugsCount}</span>
 					</div>
@@ -79,8 +86,7 @@
 					<input type="button" value="Add New" />
 					<input type="button" value="Remove Closed" />
 					<ol>
-						<li>Object reference not found</li>
-						<li className="closed">Server communication failure</li>
+						{bugItems}
 					</ol>
 				</div>
 				)
@@ -97,7 +103,8 @@
 				</div>
 				);
 			}
-		})
+		});
+
 		ReactDOM.render(<BugTrackerApp bugService={bugService}/>, document.getElementById("app"));
 
 
