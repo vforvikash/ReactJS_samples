@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Bug Tracker</title>
+	<style>
+		.closed{
+			color : red;
+			text-decoration: line-through;
+			font-style: italic;
+		}
+		ol{
+			width: 400px;
+			list-style: none;
+		}
+		li{
+			margin-bottom: 4px;
+			border : 1px solid gray;
+			background-color: #e7e7e7;
+			padding: 5px;
+			border-radius: 5px;
+			font-size: 18pt;
+			cursor: pointer;
+		}
+		.stats{
+			font-size: 16pt;
+		}
+	</style>
+	<script>
+		/*
+			1. List the bugs
+			2. Add a new bug
+			3. Toggle the 'closed' status of a bug
+			4. Remove closed bugs
+			5. Display stats
+		*/
+
+	</script>
+	<script src="react.js"></script>
+	<script src="react-dom.js"></script>
+	<script src="browser.min.js"></script>
+	<script type="text/babel">
+		var bugService = (function(){
+			var _changeListener = null;
+			var _data = [
+				{id : 1, name : 'Object reference not found', isClosed : true},
+				{id : 2, name : 'User actions not recognized', isClosed : true},
+				{id : 3, name : 'Server communication failure', isClosed : false}
+			];
+
+			function getBugs(){
+				return _data.slice(0);
+			}
+			function triggerChange(){
+				if (typeof _changeListener === 'function')
+					_changeListener();
+			}
+			function addBug(bugName){
+				
+				var newId = _data.reduce(function(result, bug){
+					return result > bug.id ? result : bug.id;
+				},0) + 1;
+
+				var newBug = {
+					id : newId,
+					name : bugName,
+					isClosed : false
+				};
+				_data.push(newBug)
+				console.log('a new bug is added');
+				console.table(_data);
+				triggerChange();
+			}
+			function toggleBug(bug){
+				bug.isClosed = !bug.isClosed;
+				triggerChange();
+			}
+			function removeClosed(){
+				_data = _data.filter(bug => !bug.isClosed);
+				triggerChange();
+			}
+			function onStateChange(listener){
+				_changeListener = listener;
+			}
+			return {
+				getBugs : getBugs,
+				addBug : addBug,
+				toggleBug : toggleBug,
+				removeClosed : removeClosed,
+				onChange : onStateChange
+			}
+		})();
+
+
+		var Header = React.createClass({
+			render : function(){
+				return (
+					<h1>Bug Tracker</h1>
+				);
+			}
+		});
+		var BugList = React.createClass({
+			
+			addNew : function(){
+				var newBugName = this.refs.txtBugName.value;
+				this.props.addNew(newBugName);
+				
+			},
+			removeClosed : function(){
+				this.props.removeClosed();
+			},
+			render : function(){
+				var bugs = this.props.bugs;
+				
+				var closedBugsCount = bugs.reduce((result, bug) => bug.isClosed ? ++result : result, 0);
+				var bugItems = bugs.map((bug) => {
+					return <BugItem bug={bug} key={bug.id} toggle={this.props.toggle}/>;
+				});
+
+				return (
+		
+					<div className="content">
+					<div className="stats">
+						<span className="closed">{closedBugsCount}</span>
+						<span>/</span>
+						<span>{bugs.length}</span>
+					</div>
+					<label htmlFor="">Bug :</label>
+					<input type="text" ref="txtBugName" />
+					<input type="button" value="Add New" onClick={this.addNew} />
+					<input type="button" value="Remove Closed" onClick={this.removeClosed} />
+					<ol>
+						{bugItems}
+					</ol>
+				</div>
+				)
+			}
+		});
+		var BugItem = React.createClass({
+			
+			toggle: function(){
+				this.props.toggle(this.props.bug)
+			},
+			render : function(){
+				var bug = this.props.bug;
+			
+				if (bug.isClosed)
+					return <li className="closed" onClick={this.toggle}>{bug.name}</li>;
+				return <li onClick={this.toggle}>{bug.name}</li>;
+			
+			}
+		});
+
+		var BugTrackerApp = React.createClass({
+			render : function(){
+				var bugService = this.props.bugService,
+					bugs = bugService.getBugs();
+
+				return (
+
+				<div>
+					<Header></Header>
+					<BugList bugs={bugs} addNew={bugService.addBug} removeClosed={bugService.removeClosed} toggle={bugService.toggleBug}></BugList>
+				</div>
+				);
+			}
+		});
+		function render(){
+			ReactDOM.render(<BugTrackerApp bugService={bugService} />, document.getElementById("app"));
+		}
+		bugService.onChange(render);
+		render();
+
+	</script>
+</head>
+<body>
+	<div id="app">
+		
+		
+	</div>
+		
+	
+</body>
+</html>
