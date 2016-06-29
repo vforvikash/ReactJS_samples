@@ -36,23 +36,59 @@
 		*/
 
 	</script>
+	<script src="react.js"></script>
+	<script src="react-dom.js"></script>
+	<script src="browser.min.js"></script>
+	<script type="text/babel">
+		var Header = React.createClass({
+			render : function(){
+				return (
+					<h1>Bug Tracker</h1>
+				);
+			}
+		});
+		var BugList = React.createClass({
+			render : function(){
+				return (
+					<div className="content">
+					<div className="stats">
+						<span className="closed">3</span>
+						<span>/</span>
+						<span>5</span>
+					</div>
+					<label htmlFor="">Bug :</label>
+					<input type="text" name="" id="" />
+					<input type="button" value="Add New" />
+					<input type="button" value="Remove Closed" />
+					<ol>
+						<li>Object reference not found</li>
+						<li className="closed">Server communication failure</li>
+					</ol>
+				</div>
+				)
+			}
+		});
+		var BugTrackerApp = React.createClass({
+			render : function(){
+				return (
+				<div>
+					<Header></Header>
+					<BugList></BugList>
+				</div>
+				);
+			}
+		})
+		ReactDOM.render(<BugTrackerApp />, document.getElementById("app"));
+
+
+	</script>
 </head>
 <body>
-	<h1>Bug Tracker</h1>
-	<div class="content">
-		<div class="stats">
-			<span class="closed">3</span>
-			<span>/</span>
-			<span>5</span>
-		</div>
-		<label for="">Bug :</label>
-		<input type="text" name="" id="">
-		<input type="button" value="Add New">
-		<input type="button" value="Remove Closed">
-		<ol>
-			<li>Object reference not found</li>
-			<li class="closed">Server communication failure</li>
-		</ol>
+	<div id="app">
+		
+		
 	</div>
+		
+	
 </body>
 </html>
