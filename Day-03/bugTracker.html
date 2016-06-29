@@ -92,13 +92,18 @@
 					bugs : this.state.bugs.concat(newBug)
 				});
 			},
+			removeClosed : function(){
+				this.setState({
+					bugs : this.state.bugs.filter(function(bug){
+						return !bug.isClosed;
+					})
+				});
+			},
 			render : function(){
 				var totalBugsCount = this.state.bugs.length;
 				var closedBugsCount = this.state.bugs.reduce((result, bug) => bug.isClosed ? ++result : result, 0);
 				var bugItems = this.state.bugs.map((bug) => {
-					if (bug.isClosed)
-						return <li key={bug.id} className="closed">{bug.name}</li>;
-					return <li key={bug.id}>{bug.name}</li>;
+					return <BugItem bug={bug} key={bug.id}/>;
 				});
 
 				return (
@@ -112,7 +117,7 @@
 					<label htmlFor="">Bug :</label>
 					<input type="text" ref="txtBugName" />
 					<input type="button" value="Add New" onClick={this.addNew} />
-					<input type="button" value="Remove Closed" />
+					<input type="button" value="Remove Closed" onClick={this.removeClosed} />
 					<ol>
 						{bugItems}
 					</ol>
@@ -120,6 +125,24 @@
 				)
 			}
 		});
+		var BugItem = React.createClass({
+			componentWillMount : function(){
+				this.setState({bug : this.props.bug})
+			},
+			toggle: function(){
+				this.state.bug.isClosed = !this.state.bug.isClosed;
+				this.setState({bug : this.state.bug});
+			},
+			render : function(){
+				var bug = this.state.bug;
+			
+				if (bug.isClosed)
+					return <li className="closed" onClick={this.toggle}>{bug.name}</li>;
+				return <li onClick={this.toggle}>{bug.name}</li>;
+			
+			}
+		});
+
 		var BugTrackerApp = React.createClass({
 			render : function(){
 				var bugs = this.props.bugService.getBugs();
