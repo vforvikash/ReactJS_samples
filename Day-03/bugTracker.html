@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Bug Tracker</title>
+	<style>
+		.closed{
+			color : red;
+			text-decoration: line-through;
+			font-style: italic;
+		}
+		ol{
+			width: 400px;
+			list-style: none;
+		}
+		li{
+			margin-bottom: 4px;
+			border : 1px solid gray;
+			background-color: #e7e7e7;
+			padding: 5px;
+			border-radius: 5px;
+			font-size: 18pt;
+			cursor: pointer;
+		}
+		.stats{
+			font-size: 16pt;
+		}
+	</style>
+	<script>
+		/*
+			1. List the bugs
+			2. Add a new bug
+			3. Toggle the 'closed' status of a bug
+			4. Remove closed bugs
+			5. Display stats
+		*/
+
+	</script>
+</head>
+<body>
+	<h1>Bug Tracker</h1>
+	<div class="content">
+		<div class="stats">
+			<span class="closed">3</span>
+			<span>/</span>
+			<span>5</span>
+		</div>
+		<label for="">Bug :</label>
+		<input type="text" name="" id="">
+		<input type="button" value="Add New">
+		<input type="button" value="Remove Closed">
+		<ol>
+			<li>Object reference not found</li>
+			<li class="closed">Server communication failure</li>
+		</ol>
+	</div>
+</body>
+</html>

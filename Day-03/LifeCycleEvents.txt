@@ -1,0 +1,15 @@
+componentWillMount
+		
+componentDidMount
+
+componentWillReceiveProps(nextProps)
+	setState
+
+shouldComponentUpdate(nextProps,  nextState)
+
+componentWillUpdate
+
+componentDidUpdate(object prevProps, object prevState)
+
+componentWillUnmount
+
