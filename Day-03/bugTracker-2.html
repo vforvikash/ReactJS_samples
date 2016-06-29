@@ -99,8 +99,21 @@
 				);
 			}
 		});
-		var BugList = React.createClass({
-			
+		var BugStats = React.createClass({
+			render : function(){
+				var bugs = this.props.bugs;
+				
+				var closedBugsCount = bugs.reduce((result, bug) => bug.isClosed ? ++result : result, 0);
+				return (
+					<div className="stats">
+						<span className="closed">{closedBugsCount}</span>
+						<span>/</span>
+						<span>{bugs.length}</span>
+					</div>
+				)
+			}
+		})
+		var BugEditor = React.createClass({
 			addNew : function(){
 				var newBugName = this.refs.txtBugName.value;
 				this.props.addNew(newBugName);
@@ -110,32 +123,44 @@
 				this.props.removeClosed();
 			},
 			render : function(){
-				var bugs = this.props.bugs;
-				
-				var closedBugsCount = bugs.reduce((result, bug) => bug.isClosed ? ++result : result, 0);
-				var bugItems = bugs.map((bug) => {
-					return <BugItem bug={bug} key={bug.id} toggle={this.props.toggle}/>;
-				});
-
 				return (
-		
-					<div className="content">
-					<div className="stats">
-						<span className="closed">{closedBugsCount}</span>
-						<span>/</span>
-						<span>{bugs.length}</span>
+					<div>
+						<label htmlFor="">Bug :</label>
+						<input type="text" ref="txtBugName" />
+						<input type="button" value="Add New" onClick={this.addNew} />
+						<input type="button" value="Remove Closed" onClick={this.removeClosed} />
+					
 					</div>
-					<label htmlFor="">Bug :</label>
-					<input type="text" ref="txtBugName" />
-					<input type="button" value="Add New" onClick={this.addNew} />
-					<input type="button" value="Remove Closed" onClick={this.removeClosed} />
-					<ol>
-						{bugItems}
-					</ol>
-				</div>
+				);
+			}
+		})
+		var BugList = React.createClass({
+			
+			
+			render : function(){
+				var bugs = this.props.bugs;
+				return (
+					<div className="content">
+						<BugStats bugs={bugs} />
+						<BugEditor addNew={this.props.addNew} removeClosed={this.props.removeClosed}/>
+						<BugItems bugs={bugs} toggle={this.props.toggle}/>
+					</div>
 				)
 			}
 		});
+		var BugItems = React.createClass({
+			
+			render : function(){
+				var bugItems = this.props.bugs.map((bug) => {
+					return <BugItem bug={bug} key={bug.id} toggle={this.props.toggle}/>;
+				});
+				return (
+					<ol>
+						{bugItems}
+					</ol>
+				);
+			}
+		})
 		var BugItem = React.createClass({
 			
 			toggle: function(){
