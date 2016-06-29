@@ -50,8 +50,12 @@
 			function getBugs(){
 				return _data.slice(0);
 			}
+			function addBug(){
+
+			}
 			return {
-				getBugs : getBugs
+				getBugs : getBugs,
+				addBug : addBug
 			}
 		})();
 
@@ -64,10 +68,34 @@
 			}
 		});
 		var BugList = React.createClass({
+			getInitialState : function(){
+				return {
+					bugs : []
+				}
+			},
+			componentWillMount : function(){
+				this.setState({
+					bugs : this.props.bugs
+				});
+			},
+			addNew : function(){
+				var bugName = this.refs.txtBugName.value;
+				var newId = this.state.bugs.reduce(function(result, bug){
+					return result > bug.id ? result : bug.id;
+				},0) + 1;
+				var newBug = {
+					id : newId,
+					name : bugName,
+					isClosed : false
+				};
+				this.setState({
+					bugs : this.state.bugs.concat(newBug)
+				});
+			},
 			render : function(){
-				var totalBugsCount = this.props.bugs.length;
-				var closedBugsCount = this.props.bugs.reduce((result, bug) => bug.isClosed ? ++result : result, 0);
-				var bugItems = this.props.bugs.map((bug) => {
+				var totalBugsCount = this.state.bugs.length;
+				var closedBugsCount = this.state.bugs.reduce((result, bug) => bug.isClosed ? ++result : result, 0);
+				var bugItems = this.state.bugs.map((bug) => {
 					if (bug.isClosed)
 						return <li key={bug.id} className="closed">{bug.name}</li>;
 					return <li key={bug.id}>{bug.name}</li>;
@@ -82,8 +110,8 @@
 						<span>{totalBugsCount}</span>
 					</div>
 					<label htmlFor="">Bug :</label>
-					<input type="text" name="" id="" />
-					<input type="button" value="Add New" />
+					<input type="text" ref="txtBugName" />
+					<input type="button" value="Add New" onClick={this.addNew} />
 					<input type="button" value="Remove Closed" />
 					<ol>
 						{bugItems}
