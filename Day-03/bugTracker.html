@@ -40,6 +40,22 @@
 	<script src="react-dom.js"></script>
 	<script src="browser.min.js"></script>
 	<script type="text/babel">
+		var bugService = (function(){
+			var _data = [
+				{id : 1, name : 'Object reference not found', isClosed : false},
+				{id : 2, name : 'User actions not recognized', isClosed : true},
+				{id : 3, name : 'Server communication failure', isClosed : false}
+			];
+
+			function getBugs(){
+				return _data.slice(0);
+			}
+			return {
+				getBugs : getBugs
+			}
+		})();
+
+
 		var Header = React.createClass({
 			render : function(){
 				return (
@@ -49,12 +65,14 @@
 		});
 		var BugList = React.createClass({
 			render : function(){
+				var totalBugsCount = this.props.bugs.length;
 				return (
+		
 					<div className="content">
 					<div className="stats">
 						<span className="closed">3</span>
 						<span>/</span>
-						<span>5</span>
+						<span>{totalBugsCount}</span>
 					</div>
 					<label htmlFor="">Bug :</label>
 					<input type="text" name="" id="" />
@@ -70,15 +88,17 @@
 		});
 		var BugTrackerApp = React.createClass({
 			render : function(){
+				var bugs = this.props.bugService.getBugs();
 				return (
+
 				<div>
 					<Header></Header>
-					<BugList></BugList>
+					<BugList bugs={bugs}></BugList>
 				</div>
 				);
 			}
 		})
-		ReactDOM.render(<BugTrackerApp />, document.getElementById("app"));
+		ReactDOM.render(<BugTrackerApp bugService={bugService}/>, document.getElementById("app"));
 
 
 	</script>
