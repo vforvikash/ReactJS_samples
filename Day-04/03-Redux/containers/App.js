@@ -22,6 +22,7 @@ class App extends Component {
   }
 }
 
+//defining properties
 App.propTypes = {
   todos: PropTypes.array.isRequired,
   calculator : PropTypes.object.isRequired,
@@ -29,6 +30,10 @@ App.propTypes = {
   calculatorActions : PropTypes.object.isRequired
 };
 
+
+//Here mapping actual state to above given properties - so redux will be aware about the state 
+//which are connected to props and can update based on change
+//State is initialized at reducer
 function mapStateToProps(state) {
   console.log('inside mapStateToProps, state -> ', state)
   return {
@@ -37,6 +42,7 @@ function mapStateToProps(state) {
   }
 }
 
+//Here mapping Actions with Dispatcher
 function mapDispatchToProps(dispatch) {
   console.log('inside mapDispatchToProps, dispatch -> ', dispatch)
   return {
@@ -45,6 +51,7 @@ function mapDispatchToProps(dispatch) {
   }
 }
 
+//connecting actions and state with redux
 var connector = connect(
   mapStateToProps,
   mapDispatchToProps

@@ -1,3 +1,5 @@
+//These method returns action object
+
 export function add(n1, n2) {
   return { type: 'ADD', n1, n2 }
 }
