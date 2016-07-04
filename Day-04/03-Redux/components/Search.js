@@ -21,13 +21,13 @@ class Search extends Component{
                 <h2>Search Reservation By Name</h2>
                 <input type="text" placeholder="Enter your search criteria..." ref="searchText"/>
                 <input type="button" value="Search" onClick={this.performSearch.bind(this)}/>
-            
-                
-                {this.props.searchResult.map(reservation => {
-                         this.renderSearchResult(reservation);
-                    })
-                }
-
+                <ul>
+                 {this.props.searchResult.map( x =>
+                        <li key={x.id}>
+                            {x.reservationName}
+                        </li>
+                    )}
+                </ul>
             </div>
         );
     }
