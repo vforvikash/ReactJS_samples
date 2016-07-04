@@ -4,19 +4,23 @@ import { connect } from 'react-redux'
 import Header from '../components/Header'
 import MainSection from '../components/MainSection'
 import Calculator from '../components/Calculator'
+import Search from '../components/Search'
 import * as TodoActions from '../actions'
 import * as calculatorActions from '../actions/calculatorActions'
+import * as searchAction from '../actions/searchAction'
 
 
 class App extends Component {
   render() {
-    const { todos, calculator, todoActions, calculatorActions } = this.props
+    const { todos, calculator, todoActions, calculatorActions, searchResult, searchAction } = this.props
     return (
       <div>
         <Header addTodo={todoActions.addTodo} />
         <MainSection todos={todos} actions={todoActions} />
         <br/>
         <Calculator data={calculator} actions={calculatorActions}></Calculator>
+
+        <Search searchResult={searchResult} action={searchAction}/>
       </div>
     )
   }
@@ -27,7 +31,9 @@ App.propTypes = {
   todos: PropTypes.array.isRequired,
   calculator : PropTypes.object.isRequired,
   todoActions: PropTypes.object.isRequired,
-  calculatorActions : PropTypes.object.isRequired
+  calculatorActions : PropTypes.object.isRequired,
+  searchResult: PropTypes.array.isRequired,
+  searchAction: PropTypes.object.isRequired
 };
 
 
@@ -38,7 +44,8 @@ function mapStateToProps(state) {
   console.log('inside mapStateToProps, state -> ', state)
   return {
     todos: state.todos,
-    calculator : state.calculator
+    calculator : state.calculator,
+    searchResult : state.searchResult
   }
 }
 
@@ -47,7 +54,8 @@ function mapDispatchToProps(dispatch) {
   console.log('inside mapDispatchToProps, dispatch -> ', dispatch)
   return {
     todoActions: bindActionCreators(TodoActions, dispatch),
-    calculatorActions : bindActionCreators(calculatorActions, dispatch)
+    calculatorActions : bindActionCreators(calculatorActions, dispatch),
+    searchAction: bindActionCreators(searchAction, dispatch)
   }
 }
 
