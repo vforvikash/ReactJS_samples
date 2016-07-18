@@ -1,61 +1,35 @@
 import { combineReducers } from 'redux'
 import {
-  SELECT_SUBREDDIT, INVALIDATE_SUBREDDIT,
-  REQUEST_POSTS, RECEIVE_POSTS
+  REQUEST_POSTS, RECEIVE_POSTS,
+  SELECT_SEARCH, INVALIDATE_SEARCH
 } from './actions'
 
-function selectedSubreddit(state = 'reactjs', action) {
-  switch (action.type) {
-  case SELECT_SUBREDDIT:
-    return action.subreddit
-  default:
-    return state
-  }
+const initialState = {
+  searchResults: [],
+    searchText:''
 }
 
-function posts(state = {
-  isFetching: false,
-  didInvalidate: false,
-  items: []
-}, action) {
+function searchState(state=initialState, action){
+  console.log('initState called->',action)
   switch (action.type) {
-    case INVALIDATE_SUBREDDIT:
-      return Object.assign({}, state, {
-        didInvalidate: true
-      })
+    case SELECT_SEARCH:
+      console.log('select_search in reducers->', action);
+      return {searchText: action.searchText};
+    case INVALIDATE_SEARCH:
     case REQUEST_POSTS:
-      return Object.assign({}, state, {
-        isFetching: true,
-        didInvalidate: false
-      })
     case RECEIVE_POSTS:
       return Object.assign({}, state, {
-        isFetching: false,
-        didInvalidate: false,
-        items: action.posts,
-        lastUpdated: action.receivedAt
-      })
+        searchText: action.searchText,
+        searchResults: action.searchResults
+      });
+      
     default:
-      return state
-  }
-}
-
-function postsBySubreddit(state = { }, action) {
-  switch (action.type) {
-    case INVALIDATE_SUBREDDIT:
-    case RECEIVE_POSTS:
-    case REQUEST_POSTS:
-      return Object.assign({}, state, {
-        [action.subreddit]: posts(state[action.subreddit], action)
-      })
-    default:
-      return state
+      return state;
   }
 }
 
 const rootReducer = combineReducers({
-  postsBySubreddit,
-  selectedSubreddit
+  searchState
 })
 
 export default rootReducer

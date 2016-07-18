@@ -1,10 +1,7 @@
-// to add anything in package use below command
-// npm install --save isomorphic-fetch
-
 {
   "name": "redux-todomvc-example",
   "version": "0.0.0",
-  "description": "Redux TodoMVC example",
+  "description": "Async Application Sample",
   "scripts": {
     "start": "node server.js",
     "test": "cross-env NODE_ENV=test mocha --recursive --compilers js:babel-register --require ./test/setup.js",

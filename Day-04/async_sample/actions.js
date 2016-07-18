@@ -2,50 +2,87 @@ import fetch from 'isomorphic-fetch'
 
 export const REQUEST_POSTS = 'REQUEST_POSTS'
 export const RECEIVE_POSTS = 'RECEIVE_POSTS'
-export const SELECT_SUBREDDIT = 'SELECT_SUBREDDIT'
-export const INVALIDATE_SUBREDDIT = 'INVALIDATE_SUBREDDIT'
+export const SELECT_SEARCH = 'SELECT_SEARCH'
+export const INVALIDATE_SEARCH = 'INVALIDATE_SEARCH'
 
-export function selectSubreddit(subreddit) {
+export function selectSearchText(searchText) {
+  console.log('select search text');
   return {
-    type: SELECT_SUBREDDIT,
-    subreddit
+    type: SELECT_SEARCH,
+    searchText: searchText
   }
 }
 
-export function invalidateSubreddit(subreddit) {
+export function invalidateSearch(searchText) {
   return {
-    type: INVALIDATE_SUBREDDIT,
-    subreddit
+    type: INVALIDATE_SEARCH,
+    searchText: searchText
   }
 }
 
-function requestPosts(subreddit) {
+function requestPosts(searchText) {
   return {
     type: REQUEST_POSTS,
-    subreddit
+    ssearchText: searchText
   }
 }
 
-function receivePosts(subreddit, json) {
+function receivePosts(searchText, json) {
+  console.log('post received->',searchText);
+  console.log('json received->',json);
+  var searchResults = [];
+  json.map(child=>{
+    searchResults.push({
+      id: child.id,
+      reservationName: child.reservationName
+    })
+  });
+  console.log('searchResults--->',searchResults);
   return {
     type: RECEIVE_POSTS,
-    subreddit,
-    posts: json.data.children.map(child => child.data),
-    receivedAt: Date.now()
+    searchText,
+    searchResults: searchResults
   }
 }
 
-function fetchPosts(subreddit) {
+function receiveSearch(searchText, json) {
+  console.log('post received->',searchText);
+  console.log('json received->',json);
+  var searchResults = [];
+  json._embedded.reservations.map(child=>{
+    searchResults.push({
+      id: child.id,
+      reservationName: child.reservationName
+    })
+  });
+  console.log('searchResults--->',searchResults);
+  return {
+    type: RECEIVE_POSTS,
+    searchText,
+    searchResults: searchResults
+  }
+}
+
+export function fetchPosts(searchText) {
+  console.log('fetch Post for searchText->',searchText)
+  if(searchText==='')
+    return dispatch => {
+      dispatch(requestPosts(searchText))
+      return fetch('http://localhost:8080/get_all')
+        .then(response => response.json())
+        .then(json => dispatch(receivePosts(searchText, json)))
+    }
   return dispatch => {
-    dispatch(requestPosts(subreddit))
-    return fetch(`http://www.reddit.com/r/${subreddit}.json`)
+    dispatch(requestPosts(searchText))
+    return fetch('http://localhost:8080/reservations/search/by-name?rn='+searchText)
       .then(response => response.json())
-      .then(json => dispatch(receivePosts(subreddit, json)))
+      .then(json => dispatch(receiveSearch(searchText, json)))
   }
 }
 
-function shouldFetchPosts(state, subreddit) {
-  const posts = state.postsBySubreddit[subreddit]
+function shouldFetchPosts(state, searchText) {
+
+  const posts = state.resultsByCriteria[searchText]
   if (!posts) {
     return true
   } else if (posts.isFetching) {
@@ -55,10 +92,11 @@ function shouldFetchPosts(state, subreddit) {
   }
 }
 
-export function fetchPostsIfNeeded(subreddit) {
+export function fetchPostsIfNeeded(searchText) {
+  console.log('fetchPostsIfNeeded is called->',searchText);
   return (dispatch, getState) => {
-    if (shouldFetchPosts(getState(), subreddit)) {
-      return dispatch(fetchPosts(subreddit))
+    if (shouldFetchPosts(getState(), searchText)) {
+      return dispatch(fetchPosts(searchText))
     }
   }
 }
